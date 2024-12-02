@@ -1,0 +1,163 @@
+body {
+    background-image: radial-gradient(circle at 50% -20.71%, #b72f0d 0, #bd3b3b 12.5%, #d54c4c 25%, #e76f6f 37.5%, #e7a8a8 50%, #f4b1b1 62.5%, #f7c6c6 75%, #f8dada 87.5%, #f9e6e6 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+* {
+    font-family: 'Lato', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
+    box-sizing: border-box;
+}
+
+form {
+    width: 600px;
+    border: 2px solid #b72f0d; /* Rojo oscuro */
+    padding: 7.5rem;
+    background-color: #fef2f2; /* Blanco con un toque de rojo */
+    border-radius: 20px;
+    color: #b72f0d; /* Rojo oscuro */
+    position: relative; /* Necesario para el posicionamiento absoluto de los botones */
+    flex-direction: column; /* Organiza los elementos verticalmente */
+}
+
+h1 {
+    display: block;
+    border: 2px solid #b72f0d; /* Rojo oscuro */
+    width: 95%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #fbe4e4; /* Rosa claro */
+    color: #b72f0d; /* Rojo oscuro */
+}
+
+hr {
+    border: none;
+    margin: 5px;
+    height: 10px;
+    background-color: #b72f0d00; /* Rojo oscuro */
+}
+
+label {
+    color: #b72f0d; /* Rojo oscuro */
+    font-size: 18px;
+    padding: 10px;
+    font-weight: 500;
+}
+
+input {
+    display: block;
+    border: 2px solid #b72f0d; /* Rojo oscuro */
+    color: #b72f0d; /* Rojo oscuro */
+    width: 95%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: #fbe4e4; /* Rosa claro */
+}
+
+button {
+    float: right;
+    background-color: #b72f0d; /* Rojo oscuro */
+    padding: .5rem;
+    color: #ffffff; /* Blanco */
+    border: none;
+    width: 60%;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+a.button {
+    background-color: #b72f0d; /* Rojo oscuro */
+    padding: .5rem;
+    color: #ffffff; /* Blanco */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none; /* Quita el subrayado de los enlaces */
+    font-size: 0.75rem; /* Tamaño de fuente más pequeño */
+    width: 45%; /* Ajusta el ancho del botón pequeño */
+}
+button:hover {
+    background-color: #9f1010; /* Rojo más oscuro */
+    color: #ffffff; /* Blanco */
+}
+
+button.small {
+    font-size: 0.75rem; /* Tamaño de fuente más pequeño */
+    width: 45%; /* Ajusta el ancho del botón pequeño */
+}
+
+button.small.left {
+    position: absolute;
+    bottom: 10px; /* Ajusta la distancia desde el fondo */
+    left: 10px; /* Ajusta la distancia desde el borde izquierdo */
+}
+
+button.small.right {
+    position: absolute;
+    bottom: 10px; /* Ajusta la distancia desde el fondo */
+    right: 10px; /* Ajusta la distancia desde el borde derecho */
+}
+
+input[type="submit"].large {
+    margin-bottom: 1rem; /* Espacio adicional debajo de los botones grandes */
+}
+
+/* Estilos adicionales para el botón de Ingresar */
+.styled-button.large {
+    display: block; /* Asegura que el botón ocupe todo el ancho disponible */
+    width: 100%; /* Ajusta el ancho al 100% del contenedor */
+    margin: 0 auto; /* Centra el botón horizontalmente */
+}
+
+a {
+    float: left;
+    margin-left: 10px;
+    padding: .5rem;
+    text-decoration: none;
+    color: #b72f0d; /* Rojo oscuro */
+    background-color: #fbe4e4; /* Rosa claro */
+}
+
+a:hover {
+    color: #ffffff; /* Blanco */
+    background-color: #b72f0d; /* Rojo oscuro */
+}
+
+.error {
+    background-color: #d54c4c; /* Rojo intenso */
+    color: #ffffff; /* Blanco */
+    padding: 10px;
+    width: 95%;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+
+.styled-button {
+    background-color: #b72f0d; /* Rojo oscuro */
+    color: #ffffff; /* Blanco */
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+}
