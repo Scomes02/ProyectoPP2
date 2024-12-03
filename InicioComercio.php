@@ -14,23 +14,23 @@
 
 <body>
     <form action="Registrarse.php" method="post">
-        <h1>Inicio Sesión</h1>
+        <h1>Inicio Sesion</h1>
         <br>
         <label for="usuario">
             <i class="fa-solid fa-user"></i> Usuario
         </label>
         <input type="text" id="usuario" name="Usuario" placeholder="Ingrese Usuario">
-        <label for="clave">
+       <label for="clave">
             <i class="fa-solid fa-key"></i> Clave
         </label>
         <input type="password" id="clave" name="Clave" placeholder="Ingrese Clave">
         <hr>
-        <a href="RocketApp-CL.html" type="submit" class="button styled-button large">Ingresar</a>
+        <a href="RocketApp-COM.php" type="submit" class="button styled-button large">Ingresar</a>
         <hr>
         <hr>
         <hr>
-        <a href="Index.html" class="button styled-button small left">Regresar</a>
-        <a href="Registro.html" class="button styled-button small right">Crear Cuenta</a>
+        <a href="Index.php" class="button styled-button small left">Regresar</a>
+        <a href="Registro.php" class="button styled-button small right">Crear Cuenta</a>
     </form>
 </body>
 </html>

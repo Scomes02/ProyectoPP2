@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -26,15 +29,15 @@
                 <div class="botones">
 					<div class="boton-contenedor">
 						<img src="img/Clientes.png" alt="Imagen de Clientes" class="imagen-boton">
-						<a type="submit" href="InicioCliente.html" class="styled-button">Cliente</a>
+						<a type="submit" href="InicioCliente.php" class="styled-button">Cliente</a>
 					</div>
 					<div class="boton-contenedor">
                         <img src="img/Comercios.png" alt="Imagen de Comercios" class="imagen-boton">
-                        <a type="submit" href="InicioComercio.html" class="styled-button">Comercio</a>
+                        <a type="submit" href="InicioComercio.php" class="styled-button">Comercio</a>
                     </div>
                 </div>
 				<br>
-				<a href="Registro.html" class="button">Crear Cuenta</a>
+				<a href="Registro.php" class="button">Crear Cuenta</a>
             </form>
         </section>
     </main>
