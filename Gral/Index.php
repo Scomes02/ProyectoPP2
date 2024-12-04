@@ -37,7 +37,7 @@ session_start();
                     </div>
                 </div>
 				<br>
-				<a href="Registro.php" class="button">Crear Cuenta</a>
+				<a href="Registro.php?origen=0" class="button">Crear Cuenta</a>
             </form>
         </section>
     </main>

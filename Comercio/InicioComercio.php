@@ -30,7 +30,7 @@
         <hr>
         <hr>
         <a href="../Gral/Index.php" class="button styled-button small left">Regresar</a>
-        <a href="../Gral/Registro.php" class="button styled-button small right">Crear Cuenta</a>
+        <a href="../Gral/Registro.php?origen=2" class="button styled-button small right">Crear Cuenta</a>
     </form>
 </body>
 </html>
