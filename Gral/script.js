@@ -5,6 +5,6 @@ document.getElementById('exitButton').addEventListener('click', function(event) 
     const loadingDiv = document.getElementById('loading');
     loadingDiv.style.display = 'block'; // Mostrar el GIF de carga
     setTimeout(function() {
-        window.location.href = 'InicioComercio.html'; // Redirigir después de 5 segundos
+        window.location.href = 'InicioComercio.php'; // Redirigir después de 5 segundos
     }, 5000);
 });

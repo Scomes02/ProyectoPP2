@@ -108,7 +108,7 @@ header h1 {
 .product-block:hover {
     transform: scale(1.05);
 }
-
+ 
 .product-block h3 {
     font-size: 18px;
     font-weight: bold;

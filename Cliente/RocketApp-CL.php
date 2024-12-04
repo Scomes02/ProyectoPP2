@@ -7,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="img/poke-icono.ico">
+    <link rel="icon" href="../img/poke-icono.ico">
     <title>Sistema Cliente - Cliente</title>
     <link rel="stylesheet" href="style3CL.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +17,7 @@ session_start();
 
 <body>
     <header>
-        <a href="Index.html"><i class="fa-solid fa-right-from-bracket"></i>Salir</a>
+        <a href="../Gral/Index.php"><i class="fa-solid fa-right-from-bracket"></i>Salir</a>
         <h1>Rocket App</h1>
     </header>
     <div class="search-bar">
@@ -33,13 +33,13 @@ session_start();
                 <div id="carouselExample1" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="img/chinito.jpg" class="d-block w-100" alt="Librería El Chinito">
+                            <img src="../img/chinito.jpg" class="d-block w-100" alt="Librería El Chinito">
                         </div>
                         <div class="carousel-item">
-                            <img src="img/miss.jpg" class="d-block w-100" alt="Perfumería Miss">
+                            <img src="../img/miss.jpg" class="d-block w-100" alt="Perfumería Miss">
                         </div>
                         <div class="carousel-item">
-                            <img src="img/boulbasour-unscreen.gif" class="d-block w-100" alt="Bulbasaur">
+                            <img src="../img/boulbasour-unscreen.gif" class="d-block w-100" alt="Bulbasaur">
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample1" data-bs-slide="prev">
@@ -59,13 +59,13 @@ session_start();
                 <div id="carouselExample2" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="img/chinito.jpg" class="d-block w-100" alt="Librería El Chinito">
+                            <img src="../img/chinito.jpg" class="d-block w-100" alt="Librería El Chinito">
                         </div>
                         <div class="carousel-item">
-                            <img src="img/miss.jpg" class="d-block w-100" alt="Perfumería Miss">
+                            <img src="../img/miss.jpg" class="d-block w-100" alt="Perfumería Miss">
                         </div>
                         <div class="carousel-item">
-                            <img src="img/boulbasour-unscreen.gif" class="d-block w-100" alt="Bulbasaur">
+                            <img src="../img/boulbasour-unscreen.gif" class="d-block w-100" alt="Bulbasaur">
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample2" data-bs-slide="prev">
@@ -83,43 +83,43 @@ session_start();
 
     <div class="product-list">
         <div class="product">
-            <img src="img/nike.png" alt="Nike Air Jordan">
+            <img src="../img/nike.png" alt="Nike Air Jordan">
             <div class="product-info">
                 <p>Nike Air Jordan</p>
                 <span class="product-price">$50.000</span>
             </div>
             <div class="product-logo">
-                <img src="img/nike-logo.png" alt="Nike Logo">
+                <img src="../img/nike-logo.png" alt="Nike Logo">
             </div>
         </div>
         <div class="product">
-            <img src="img/adidas.jpg" alt="Adidas Predator">
+            <img src="../img/adidas.jpg" alt="Adidas Predator">
             <div class="product-info">
                 <p>Adidas Predator</p>
                 <span class="product-price">$62.000</span>
             </div>
             <div class="product-logo">
-                <img src="img/adidas-logo.png" alt="Adidas Logo">
+                <img src="../img/adidas-logo.png" alt="Adidas Logo">
             </div>
         </div>
         <div class="product">
-            <img src="img/puma.jpg" alt="Puma X-Ray">
+            <img src="../img/puma.jpg" alt="Puma X-Ray">
             <div class="product-info">
                 <p>Puma X-Ray</p>
                 <span class="product-price">$45.000</span>
             </div>
             <div class="product-logo">
-                <img src="img/puma-logo.png" alt="Puma Logo">
+                <img src="../img/puma-logo.png" alt="Puma Logo">
             </div>
         </div>
         <div class="product">
-            <img src="img/guantes.png" alt="Guantes Everlast">
+            <img src="../img/guantes.png" alt="Guantes Everlast">
             <div class="product-info">
                 <p>Guantes Everlast 29oz</p>
                 <span class="product-price">$49.000</span>
             </div>
             <div class="product-logo">
-                <img src="img/Everlast_logo.png" alt="Everlast Logo">
+                <img src="../img/Everlast_logo.png" alt="Everlast Logo">
             </div>
         </div>
         <div>
@@ -127,9 +127,9 @@ session_start();
         </div>
     </div>
     <footer>
-        <img src="img/home-icon.png" alt="Home">
-        <img src="img/shop-icon.png" alt="Shop">
-        <img src="img/profile-icon.png" alt="Profile">
+        <img src="../img/home-icon.png" alt="Home">
+        <img src="../img/shop-icon.png" alt="Shop">
+        <img src="../img/profile-icon.png" alt="Profile">
     </footer>
 </body>
 

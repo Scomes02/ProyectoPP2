@@ -1,5 +1,49 @@
 <?php
+
 session_start();
+if (!isset($_SESSION['id_comercio'])) {
+    die("Error: No se ha iniciado sesión como comercio.");
+}
+$id_comercio = $_SESSION['id_comercio'];
+
+$conn = new mysqli("localhost", "root", "", "RocketApp");
+
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre = $_POST['nombre'];
+    $codigo_producto = $_POST['codigo_producto'];
+    $precio = $_POST['precio'];
+    $off = isset($_POST['off']) ? $_POST['off'] : null;
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $imagen_nombre = basename($_FILES['imagen']['name']);
+        $imagen_ruta = "../uploads/" . $imagen_nombre;
+
+        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_ruta)) {
+            $sql = "INSERT INTO productos (nombre, codigo_producto, precio, off, imagen, id_comercio) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssdsis", $nombre, $codigo_producto, $precio, $off, $imagen_nombre, $id_comercio);
+
+            if ($stmt->execute()) {
+                echo json_encode(["status" => "success", "message" => "Producto agregado correctamente."]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "Error al agregar el producto: " . $stmt->error]);
+            }
+            $stmt->close();
+        } else {
+            echo json_encode(["status" => "error", "message" => "Error al mover la imagen al directorio de destino."]);
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => "Error al subir la imagen."]);
+    }
+}
+
+$conn->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -7,7 +51,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="img/poke-icono.ico">
+    <link rel="icon" href="../img/poke-icono.ico">
     <title>Rocket App</title>
     <link rel="stylesheet" href="style3Com.css">
     <script src="https://kit.fontawesome.com/8fa0212ec6.js" crossorigin="anonymous"></script>
@@ -15,7 +59,7 @@ session_start();
 
 <body>
     <header>
-        <a href="Index.html"><i class="fa-solid fa-right-from-bracket"></i>Salir</a>
+        <a href="../Gral/Index.php"><i class="fa-solid fa-right-from-bracket"></i>Salir</a>
         <h1>Rocket App</h1>
     </header>
     <div class="product-input">
@@ -46,24 +90,24 @@ session_start();
     </div>
 
     <footer>
-        <img src="img/home-icon.png" alt="Home">
-        <img src="img/shop-icon.png" alt="Shop">
-        <img src="img/profile-icon.png" alt="Profile">
+        <img src="../img/home-icon.png" alt="Home">
+        <img src="../img/shop-icon.png" alt="Shop">
+        <img src="../img/profile-icon.png" alt="Profile">
     </footer>
 
     <script>
-        document.getElementById("add-product-button").addEventListener("click", function () {
+        document.getElementById("add-product-button").addEventListener("click", function() {
             var form = document.getElementById("add-product-form");
             var formData = new FormData(form);
 
             fetch("agregar_producto.php", {
-                method: "POST",
-                body: formData,
-            })
+                    method: "POST",
+                    body: formData,
+                })
                 .then((response) => response.json())
                 .then((data) => {
                     var messageDiv = document.getElementById("response-message");
-                    
+
                     // Muestra el mensaje de éxito o error según el estado de la respuesta
                     if (data.status === "success") {
                         messageDiv.innerHTML = "<p style='color: green;'>" + data.message + "</p>";
@@ -77,7 +121,7 @@ session_start();
                     document.getElementById("response-message").innerHTML = "<p style='color: red;'>Ocurrió un error al procesar la solicitud.</p>";
                 });
         });
-    // Función para cargar todos los productos desde la base de datos
+        // Función para cargar todos los productos desde la base de datos
         function loadProducts() {
             fetch("listar_productos.php")
                 .then((response) => response.json())
@@ -96,7 +140,7 @@ session_start();
                             <p>Código: ${product.codigo_producto}</p>
                             <p>Precio: $${product.precio}</p>
                             <p>OFF: ${product.off || "No aplica"}</p>
-                            <img src="uploads/${product.imagen}" alt="${product.nombre}" width="100" height="100">
+                            <img src="../uploads/${product.imagen}" alt="${product.nombre}" width="100" height="100">
                             <button onclick="editProduct(${product.id})">Editar</button>
                             <button onclick="deleteProduct(${product.id})">Eliminar</button>
                         `;
@@ -118,8 +162,8 @@ session_start();
         function deleteProduct(productId) {
             if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
                 fetch(`eliminar_producto.php?id=${productId}`, {
-                    method: "GET",
-                })
+                        method: "GET",
+                    })
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.status === "success") {
@@ -136,9 +180,10 @@ session_start();
         }
 
         // Cargar los productos al cargar la página
-        window.onload = function () {
+        window.onload = function() {
             loadProducts();
         };
     </script>
 </body>
+
 </html>

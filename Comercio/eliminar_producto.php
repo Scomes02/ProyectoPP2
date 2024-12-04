@@ -7,6 +7,7 @@ $dbname = "RocketApp";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
+
 // Verifica si hay errores de conexión
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);

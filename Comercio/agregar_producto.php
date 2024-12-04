@@ -13,14 +13,12 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Procesa los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nombre = $conn->real_escape_string($_POST['nombre']);
     $codigo_producto = $conn->real_escape_string($_POST['codigo_producto']);
     $precio = $conn->real_escape_string($_POST['precio']);
     $off = isset($_POST['off']) ? $conn->real_escape_string($_POST['off']) : null;
 
-    // Procesar la imagen
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0) {
         $imagen_nombre = basename($_FILES['imagen']['name']);
         $imagen_ruta = "uploads/" . $imagen_nombre;
@@ -32,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Mueve el archivo subido
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_ruta)) {
-            // Inserta los datos en la base de datos
+
             $sql = "INSERT INTO productos (nombre, codigo_producto, precio, off, imagen) 
                     VALUES ('$nombre', '$codigo_producto', '$precio', '$off', '$imagen_nombre')";
 
