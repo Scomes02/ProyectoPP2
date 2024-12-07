@@ -1,71 +1,60 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Conexión a la base de datos
     $conn = new mysqli('localhost', 'root', '', 'RocketApp');
 
     if ($conn->connect_error) {
         die(json_encode(['status' => 'error', 'message' => 'Error de conexión a la base de datos.']));
     }
 
-    // Capturar los datos del formulario
+    // Sanitizar y capturar datos
     $tipo = $_POST['tipo'] ?? null;
-    $direccion = $_POST['Direccion'] ?? '';
-    $telefono = $_POST['Telefono'] ?? '';
-    $clave = $_POST['Clave'] ?? '';
-    $nombre_comercio = $_POST['Nombre_completo'] ?? '';
-    $dni_cuit = $_POST['DNI_CUIT'] ?? '';
-    $correo = $_POST['Correo'] ?? '';
-    $rclave = $_POST['RClave'] ?? '';
+    $nombre_completo = trim($_POST['nombre_completo'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
+    $direccion = trim($_POST['direccion'] ?? '');
+    $dni_cuit = trim($_POST['dni_cuit'] ?? '');
+    $correo = filter_var(trim($_POST['correo'] ?? ''), FILTER_VALIDATE_EMAIL);
+    $clave = $_POST['clave'] ?? '';
+    $rclave = $_POST['rclave'] ?? '';
 
-    // Validaciones básicas
-    if (empty($tipo) || ($tipo !== 'Cliente' && $tipo !== 'Comercio')) {
-        echo json_encode(['status' => 'error', 'message' => 'Por favor, seleccione un tipo válido (Cliente o Comercio).']);
+    // Validaciones
+    if (!$tipo || ($tipo !== 'Cliente' && $tipo !== 'Comercio')) {
+        echo json_encode(['status' => 'error', 'message' => 'Seleccione un tipo válido (Cliente o Comercio).']);
         exit;
     }
-    if (empty($nombre_comercio) || empty($telefono) || empty($clave) || empty($dni_cuit) || empty($correo) || empty($rclave)) {
-        echo json_encode(['status' => 'error', 'message' => 'Por favor, complete todos los campos.']);
+    if (!$nombre_completo || !$telefono || !$direccion || !$dni_cuit || !$correo || !$clave || !$rclave) {
+        echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
         exit;
     }
-
     if ($clave !== $rclave) {
-        echo json_encode(['status' => 'error', 'message' => 'Las claves no coinciden.']);
+        echo json_encode(['status' => 'error', 'message' => 'Las contraseñas no coinciden.']);
         exit;
     }
 
     // Encriptar la clave
     $clave_hash = password_hash($clave, PASSWORD_DEFAULT);
 
-    // Determinar la tabla de destino según el tipo de usuario
-    if ($tipo === 'Cliente') {
-        $tabla = 'clientes';
-        $nombre_campo = 'nombre_cliente';
-    } elseif ($tipo === 'Comercio') {
-        $tabla = 'comercios';
-        $nombre_campo = 'nombre_comercio';
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Tipo de usuario no válido.']);
+    // Determinar la tabla y los campos según el tipo
+    $tabla = $tipo === 'Cliente' ? 'clientes' : 'comercios';
+    $nombre_campo = $tipo === 'Cliente' ? 'nombre_cliente' : 'nombre_comercio';
+
+    // Preparar la consulta
+    $sql = "INSERT INTO $tabla ($nombre_campo, telefono, direccion, dni_cuit, correo, clave) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        echo json_encode(['status' => 'error', 'message' => 'Error al preparar la consulta.']);
         exit;
     }
 
-    // Insertar los datos en la tabla correspondiente
-    $sql = "INSERT INTO $tabla ($nombre_campo, telefono, clave, dni_cuit, correo, direccion) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ssssss', $nombre_completo, $telefono, $direccion, $dni_cuit, $correo, $clave_hash);
 
-    $stmt->bind_param('ssssss', $nombre_comercio, $telefono, $clave_hash, $dni_cuit, $correo, $direccion);
-
+    // Ejecutar e informar del resultado
     if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Usuario registrado exitosamente.']);
+        header("Location: Index.php?success=registro");
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Error al registrar el usuario: ' . $stmt->error]);
-    }
-
-    $origen = isset($_GET['origen']) ? (int)$_GET['origen'] : 0;
-
-    if ($origen === 1) {
-        $ruta = '../Cliente/InicioCliente.php';
-    } elseif ($origen === 2) {
-        $ruta = '../Comercio/InicioComercio.php';
-    } else {
-        $ruta = 'Index.php';
     }
 
     $stmt->close();
@@ -79,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../img/poke-icono.ico">
-    <title> Crear Cuenta - Rocket App</title>
+    <title>Registro - RocketApp</title>
     <link rel="stylesheet" href="style2.css">
     <script src="https://kit.fontawesome.com/8fa0212ec6.js" crossorigin="anonymous"></script>
 </head>
@@ -88,65 +77,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main>
         <form id="registroForm" method="POST" action="registro.php">
             <h1>Registro</h1>
-            <hr>
             <div class="checkbox-group">
-                <label for="cliente">
-                    <i class="fa-solid fa-address-card"></i> Cliente
+                <label>
+                    <input type="radio" name="tipo" value="Cliente" required> Cliente
                 </label>
-                <input type="radio" id="cliente" name="tipo" value="Cliente" required>
-
-                <label for="comercio">
-                    <i class="fa-solid fa-store"></i> Comercio
+                <label>
+                    <input type="radio" name="tipo" value="Comercio" required> Comercio
                 </label>
-                <input type="radio" id="comercio" name="tipo" value="Comercio" required>
             </div>
-            <hr>
             <div class="input-group">
-                <div class="column">
-                    <label for="nombre_completo">
-                        <i class="fa-solid fa-users"></i> Usuario
-                    </label>
-                    <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Ingrese Nombre Completo" required>
-                    
-                    <label for="telefono">
-                        <i class="fa-solid fa-phone"></i> Telefono
-                    </label>
-                    <input type="tel" id="telefono" name="telefono" placeholder="Ingrese telefono" required>
+                <label>Nombre Completo</label>
+                <input type="text" name="nombre_completo" required>
 
-                    <label for="clave">
-                        <i class="fa-solid fa-key"></i> Clave
-                    </label>
-                    <input type="password" id="clave" name="clave" placeholder="Ingrese Clave" required>
-                </div>
-                <div class="column">
-                    <label for="direccion">
-                        <i class="fa-solid fa-user"></i> Direccion
-                    </label>
-                    <input type="text" id="direccion" name="direccion" placeholder="Ingrese Direccion" required>
+                <label>Teléfono</label>
+                <input type="tel" name="telefono" required>
 
-                    <label for="dni_cuit">
-                        <i class="fa-solid fa-id-card"></i> DNI/CUIT
-                    </label>
-                    <input type="text" id="dni_cuit" name="dni_cuit" placeholder="Ingrese DNI/CUIT" required>
+                <label>Dirección</label>
+                <input type="text" name="direccion" required>
+                
+                <label>DNI/CUIT</label>
+                <input type="text" name="dni_cuit" required>
 
-                    <label for="correo">
-                        <i class="fa-brands fa-envelope"></i> Mail
-                    </label>
-                    <input type="email" id="correo" name="correo" placeholder="Ingrese su Correo" required>
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" required>
 
-                    <label for="rclave">
-                        <i class="fa-solid fa-key"></i> Repetir Clave
-                    </label>
-                    <input type="password" id="rclave" name="rclave" placeholder="Repetir Clave" required>
-                </div>
+                <label>Contraseña</label>
+                <input type="password" name="clave" required>
+
+                <label>Repetir Contraseña</label>
+                <input type="password" name="rclave" required>
             </div>
-            <hr>
-            <input type="submit" class="button styled-button" value="Registrarse">
-            <hr>
-            <a href="Index.php" class="button styled-button">Salir</a>
+            <button type="submit">Registrarse</button>
+            <a href="Index.php">Salir</a>
         </form>
     </main>
-    <script src="validacion.js"></script>
 </body>
 
 </html>

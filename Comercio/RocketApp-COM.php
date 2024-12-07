@@ -1,26 +1,36 @@
 <?php
-
 session_start();
+header('Content-Type: application/json');
+
+// Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['id_comercio'])) {
-    die("Error: No se ha iniciado sesión como comercio.");
+    echo json_encode(["status" => "error", "message" => "No se ha iniciado sesión como comercio."]);
+    exit;
 }
 $id_comercio = $_SESSION['id_comercio'];
 
+// Conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "RocketApp");
-
 if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+    echo json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]);
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $codigo_producto = $_POST['codigo_producto'];
     $precio = $_POST['precio'];
-    $off = isset($_POST['off']) ? $_POST['off'] : null;
+    $off = isset($_POST['off']) && $_POST['off'] !== '' ? $_POST['off'] : null;
+
+    // Manejo de la imagen
+    $uploadDir = "../uploads/";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
         $imagen_nombre = basename($_FILES['imagen']['name']);
-        $imagen_ruta = "../uploads/" . $imagen_nombre;
+        $imagen_ruta = $uploadDir . $imagen_nombre;
 
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_ruta)) {
             $sql = "INSERT INTO productos (nombre, codigo_producto, precio, off, imagen, id_comercio) 
@@ -43,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $conn->close();
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 

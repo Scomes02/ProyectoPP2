@@ -1,13 +1,17 @@
 <?php
+session_start();
+
+// Verificar sesión activa del comercio
+if (!isset($_SESSION['id_comercio'])) {
+    echo json_encode(["status" => "error", "message" => "No tienes permiso para agregar productos."]);
+    exit;
+}
+
+$id_comercio = $_SESSION['id_comercio'];
+
 // Conexión a la base de datos
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "RocketApp";
+$conn = new mysqli("localhost", "root", "", "RocketApp");
 
-$conn = new mysqli($host, $user, $password, $dbname);
-
-// Verifica si hay errores de conexión
 if ($conn->connect_error) {
     echo json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]);
     exit();
@@ -20,33 +24,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $off = isset($_POST['off']) ? $conn->real_escape_string($_POST['off']) : null;
 
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0) {
-        $imagen_nombre = basename($_FILES['imagen']['name']);
-        $imagen_ruta = "uploads/" . $imagen_nombre;
+        $imagen_nombre = uniqid() . "_" . basename($_FILES['imagen']['name']);
+        $imagen_ruta = "../uploads/" . $imagen_nombre;
 
-        // Crea la carpeta si no existe
-        if (!file_exists("uploads")) {
-            mkdir("uploads", 0777, true);
+        // Crear carpeta si no existe
+        if (!file_exists("../uploads")) {
+            mkdir("../uploads", 0777, true);
         }
 
-        // Mueve el archivo subido
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_ruta)) {
+            $sql = "INSERT INTO productos (nombre_producto, descripcion, precio, id_comercio) VALUES (?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssdi", $nombre, $codigo_producto, $precio, $id_comercio);
 
-            $sql = "INSERT INTO productos (nombre, codigo_producto, precio, off, imagen) 
-                    VALUES ('$nombre', '$codigo_producto', '$precio', '$off', '$imagen_nombre')";
-
-            if ($conn->query($sql) === TRUE) {
+            if ($stmt->execute()) {
                 echo json_encode(["status" => "success", "message" => "Producto agregado exitosamente."]);
             } else {
-                echo json_encode(["status" => "error", "message" => "Error al agregar el producto: " . $conn->error]);
+                echo json_encode(["status" => "error", "message" => "Error al agregar producto: " . $stmt->error]);
             }
+            $stmt->close();
         } else {
-            echo json_encode(["status" => "error", "message" => "Error al subir la imagen."]);
+            echo json_encode(["status" => "error", "message" => "Error al mover la imagen."]);
         }
     } else {
-        echo json_encode(["status" => "error", "message" => "Por favor, selecciona una imagen."]);
+        echo json_encode(["status" => "error", "message" => "Por favor, selecciona una imagen válida."]);
     }
 }
 
-// Cierra la conexión
 $conn->close();
 ?>

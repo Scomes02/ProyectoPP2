@@ -1,31 +1,33 @@
 <?php
-// Conexión a la base de datos
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "RocketApp";
+session_start();
 
-$conn = new mysqli($host, $user, $password, $dbname);
+if (!isset($_SESSION['id_comercio'])) {
+    echo json_encode(["status" => "error", "message" => "No tienes permiso para ver productos."]);
+    exit;
+}
 
+$id_comercio = $_SESSION['id_comercio'];
+
+$conn = new mysqli("localhost", "root", "", "RocketApp");
 
 if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+    echo json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]);
+    exit;
 }
 
-// Consulta para obtener los productos
-$sql = "SELECT * FROM productos";
-$result = $conn->query($sql);
+$sql = "SELECT id_producto, nombre_producto, descripcion, precio, id_comercio FROM productos WHERE id_comercio = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_comercio);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $products = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $products[] = $row;
-    }
+while ($row = $result->fetch_assoc()) {
+    $products[] = $row;
 }
 
-// Devuelve los productos en formato JSON
-echo json_encode(["products" => $products]);
+echo json_encode(["status" => "success", "products" => $products]);
 
-// Cierra la conexión
+$stmt->close();
 $conn->close();
 ?>

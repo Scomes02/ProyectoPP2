@@ -54,4 +54,27 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Ocurrió un error al registrar el usuario.');
         });
     });
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        var formData = new FormData(this);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', this.action, true);
+    
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                console.log('Response:', response);
+                if (response.status === 'success') {
+                    alert('Usuario registrado exitosamente.');
+                } else {
+                    alert(response.message);
+                }
+            } else {
+                console.error('Error:', xhr.statusText);
+            }
+        };
+    
+        xhr.send(formData);
+    });
 });

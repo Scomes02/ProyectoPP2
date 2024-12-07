@@ -24,12 +24,11 @@
             <i class="fa-solid fa-key"></i> Clave
         </label>
         <input type="password" id="clave" name="Clave" placeholder="Ingrese Clave">
-        <hr>
+        <br>
         <a href="../Cliente/RocketApp-CL.php" type="submit" class="button styled-button large">Ingresar</a>
-        <hr>
-        <hr>
-        <hr>
+        <br>
         <a href="../Gral/Index.php" class="button styled-button small left">Regresar</a>
+        <br>
         <a href="../Gral/Registro.php?origen=1" class="button styled-button">Crear Cuenta</a>
 
     </form>
