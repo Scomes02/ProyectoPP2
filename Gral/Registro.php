@@ -81,11 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label>
                     <input type="radio" name="tipo" value="Cliente" required> Cliente
                 </label>
+                <br>
                 <label>
                     <input type="radio" name="tipo" value="Comercio" required> Comercio
                 </label>
             </div>
             <div class="input-group">
+                <br>
                 <label>Nombre Completo</label>
                 <input type="text" name="nombre_completo" required>
 

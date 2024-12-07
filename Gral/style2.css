@@ -96,6 +96,23 @@ a.button:hover {
     margin: 15px 0;
 }
 
+.checkbox-group {
+    display: flex;
+    justify-content: center; /* Ajusta el espacio entre los checkboxes */
+    width: 100%;
+    flex-wrap: wrap; /* Permite que los checkboxes se ajusten si no caben en una fila */
+}
+
+.checkbox-group label {
+    margin-right: 10px; /* Espacio entre los checkboxes */
+    width: auto; /* El tamaño de cada label se ajusta al contenido */
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px; /* Espacio entre el checkbox y el label */
+}
+
+
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 480px) {
     form {
