@@ -1,6 +1,5 @@
 <?php
 session_start();
-header('Content-Type: application/json');
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['id_comercio'])) {
@@ -33,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imagen_ruta = $uploadDir . $imagen_nombre;
 
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_ruta)) {
-            $sql = "INSERT INTO productos (nombre, codigo_producto, precio, off, imagen, id_comercio) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO productos (nombre_producto, descripcion, precio, id_comercio, imagen) 
+                    VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssdsis", $nombre, $codigo_producto, $precio, $off, $imagen_nombre, $id_comercio);
+            $stmt->bind_param("ssdis", $nombre, $codigo_producto, $precio, $id_comercio, $imagen_nombre);
 
             if ($stmt->execute()) {
                 echo json_encode(["status" => "success", "message" => "Producto agregado correctamente."]);
@@ -52,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -71,6 +69,22 @@ $conn->close();
     <header>
         <a href="../Gral/Index.php"><i class="fa-solid fa-right-from-bracket"></i>Salir</a>
         <h1>Rocket App</h1>
+        <?php
+        $sql = "SELECT nombre_comercio FROM comercios WHERE id_comercio = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id_comercio);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Verifica si encontró resultados
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $nombre_comercio = $row['nombre_comercio'];
+            echo "<h2>$nombre_comercio</h2>";
+        } else {
+            echo "<h2>Comercio Desconocido</h2>";
+        }
+        ?>
     </header>
     <div class="product-input">
         <form id="add-product-form" method="POST" enctype="multipart/form-data">
@@ -106,61 +120,72 @@ $conn->close();
     </footer>
 
     <script>
+        // Función para cargar todos los productos desde la base de datos
+        function loadProducts() {
+            fetch("listar_productos.php")
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Respuesta de productos:", data); // Verifica qué datos estás recibiendo
+
+                    if (Array.isArray(data.products)) {
+                        var productsContainer = document.getElementById("products-container");
+                        productsContainer.innerHTML = "";
+
+                        data.products.forEach((product) => {
+                            var productDiv = document.createElement("div");
+                            productDiv.classList.add("product-block");
+                            productDiv.innerHTML = `
+                        <h3>${product.nombre}</h3>
+                        <p>Código: ${product.codigo_producto}</p>
+                        <p>Precio: $${product.precio}</p>
+                        <p>OFF: ${product.off || "No aplica"}</p>
+                        <img src="../uploads/${product.imagen}" alt="${product.nombre}" width="100" height="100">
+                        <button onclick="editProduct(${product.id})">Editar</button>
+                        <button onclick="deleteProduct(${product.id})">Eliminar</button>
+                    `;
+                            productsContainer.appendChild(productDiv);
+                        });
+                    } else {
+                        console.log("No se encontraron productos o la estructura de la respuesta no es válida.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error al cargar productos:", error);
+                });
+        }
+
+
+        // Llamada para cargar los productos cuando la página se haya cargado
+        window.onload = function() {
+            loadProducts();
+        };
+
         document.getElementById("add-product-button").addEventListener("click", function() {
             var form = document.getElementById("add-product-form");
             var formData = new FormData(form);
 
             fetch("agregar_producto.php", {
                     method: "POST",
-                    body: formData,
+                    body: formData // Enviamos los datos del formulario
                 })
-                .then((response) => response.json())
-                .then((data) => {
-                    var messageDiv = document.getElementById("response-message");
+                .then(response => response.json()) // Esperamos la respuesta como JSON
+                .then(data => {
+                    console.log(data); // Mostramos la respuesta para depuración
 
-                    // Muestra el mensaje de éxito o error según el estado de la respuesta
                     if (data.status === "success") {
-                        messageDiv.innerHTML = "<p style='color: green;'>" + data.message + "</p>";
-                        // Opcional: si quieres hacer algo más después del éxito, puedes agregar aquí más código
+                        // Si la respuesta es exitosa, recargamos los productos
+                        loadProducts();
                     } else {
-                        messageDiv.innerHTML = "<p style='color: red;'>" + data.message + "</p>";
+                        alert("Error al agregar el producto: " + data.message);
                     }
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
-                    document.getElementById("response-message").innerHTML = "<p style='color: red;'>Ocurrió un error al procesar la solicitud.</p>";
+                    console.error("Error al agregar producto:", error);
                 });
         });
-        // Función para cargar todos los productos desde la base de datos
-        function loadProducts() {
-            fetch("listar_productos.php")
-                .then((response) => response.json())
-                .then((data) => {
-                    var productsContainer = document.getElementById("products-container");
 
-                    // Vacía el contenedor antes de agregar los nuevos productos
-                    productsContainer.innerHTML = "";
 
-                    // Muestra los productos en bloques
-                    data.products.forEach((product) => {
-                        var productDiv = document.createElement("div");
-                        productDiv.classList.add("product-block");
-                        productDiv.innerHTML = `
-                            <h3>${product.nombre}</h3>
-                            <p>Código: ${product.codigo_producto}</p>
-                            <p>Precio: $${product.precio}</p>
-                            <p>OFF: ${product.off || "No aplica"}</p>
-                            <img src="../uploads/${product.imagen}" alt="${product.nombre}" width="100" height="100">
-                            <button onclick="editProduct(${product.id})">Editar</button>
-                            <button onclick="deleteProduct(${product.id})">Eliminar</button>
-                        `;
-                        productsContainer.appendChild(productDiv);
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error al cargar los productos:", error);
-                });
-        }
+
 
         // Función para editar un producto (por implementar)
         function editProduct(productId) {
@@ -188,11 +213,6 @@ $conn->close();
                     });
             }
         }
-
-        // Cargar los productos al cargar la página
-        window.onload = function() {
-            loadProducts();
-        };
     </script>
 </body>
 

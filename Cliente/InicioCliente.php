@@ -30,7 +30,7 @@
         <a href="../Gral/Index.php" class="button styled-button small left">Regresar</a>
         <br>
         <a href="../Gral/Registro.php?origen=1" class="button styled-button">Crear Cuenta</a>
-
+        <input type="hidden" name="tipo_usuario" value="Cliente">
     </form>
 </body>
 </html>

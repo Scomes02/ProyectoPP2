@@ -33,9 +33,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         if (move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen_ruta)) {
-            $sql = "INSERT INTO productos (nombre_producto, descripcion, precio, id_comercio) VALUES (?, ?, ?, ?)";
+            // Depurar la consulta SQL para verificar si es correcta
+            $sql = "INSERT INTO productos (nombre_producto, codigo_producto, precio, off, imagen, id_comercio) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssdi", $nombre, $codigo_producto, $precio, $id_comercio);
+
+            // Verificar si la preparación de la consulta fue exitosa
+            if ($stmt === false) {
+                echo json_encode(["status" => "error", "message" => "Error al preparar la consulta: " . $conn->error]);
+                exit();
+            }
+
+            // Pasar los parámetros
+            $stmt->bind_param("ssdsdi", $nombre, $codigo_producto, $precio, $off, $imagen_nombre, $id_comercio);
 
             if ($stmt->execute()) {
                 echo json_encode(["status" => "success", "message" => "Producto agregado exitosamente."]);

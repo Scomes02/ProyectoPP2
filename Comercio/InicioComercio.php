@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <form action="../Gral/Registro.php" method="post">
+    <form action="procesar_inicio_sesion.php" method="post">
         <h1>Inicio Sesión</h1>
         <br>
         <label for="nombre_comercio">
@@ -25,6 +25,7 @@
             <i class="fa-solid fa-key"></i> Clave
         </label>
         <input type="password" id="clave" name="Clave" placeholder="Ingrese Clave" required>
+        <input type="hidden" name="tipo_usuario" value="Comercio">
         <br>
         <button type="submit" class="button styled-button large">Ingresar</button>
         <br>

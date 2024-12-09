@@ -8,38 +8,48 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['Usuario'];
+    $nombre_comercio = $_POST['nombre_comercio'];
     $clave = $_POST['Clave'];
+    $tipo_usuario = $_POST['tipo_usuario'];
 
     // Validar que los datos no estén vacíos
-    if (empty($usuario) || empty($clave)) {
+    if (empty($nombre_comercio) || empty($clave) || empty($tipo_usuario)) {
         echo json_encode(["status" => "error", "message" => "Debe completar todos los campos."]);
         exit;
     }
 
-    // Buscar el comercio en la base de datos
-    $sql = "SELECT id_comercio, clave FROM comercios WHERE usuario = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Verificar el tipo de usuario
+    if ($tipo_usuario === "Comercio") {
+        // Buscar el comercio en la base de datos
+        $sql = "SELECT id_comercio, clave FROM comercios WHERE nombre_comercio = ?";
+        $stmt = $conn->prepare($sql);
 
-    if ($result->num_rows > 0) {
-        $comercio = $result->fetch_assoc();
-        // Verificar la contraseña
-        if (password_verify($clave, $comercio['clave'])) {
-            // Iniciar sesión
-            $_SESSION['id_comercio'] = $comercio['id_comercio'];
-            echo json_encode(["status" => "success", "message" => "Inicio de sesión exitoso."]);
-            header("Location: RocketApp-COM.php");
-        } else {
-            echo json_encode(["status" => "error", "message" => "Contraseña incorrecta."]);
+        // Comprobar si la preparación de la consulta fue exitosa
+        if ($stmt === false) {
+            die("Error en la preparación de la consulta: " . $conn->error);
         }
-    } else {
-        echo json_encode(["status" => "error", "message" => "Usuario no encontrado."]);
-    }
 
-    $stmt->close();
+        $stmt->bind_param("s", $nombre_comercio);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $comercio = $result->fetch_assoc();
+            if (password_verify($clave, $comercio['clave'])) {
+                $_SESSION['id_comercio'] = $comercio['id_comercio'];
+                header("Location: RocketApp-COM.php");
+                exit;
+            } else {
+                echo json_encode(["status" => "error", "message" => "Contraseña incorrecta."]);
+            }            
+        } else {
+            echo json_encode(["status" => "error", "message" => "Usuario no encontrado."]);
+        }
+
+        $stmt->close();
+    } else {
+        echo json_encode(["status" => "error", "message" => "Seleccione un tipo válido (Cliente o Comercio)."]);
+    }
 }
 
 $conn->close();

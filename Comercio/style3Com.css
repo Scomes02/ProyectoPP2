@@ -6,23 +6,31 @@ body {
 }
 
 header {
+    display: flex; /* Usamos flexbox para alinear los elementos */
+    justify-content: space-between; /* Espaciamos los elementos a los extremos */
+    align-items: center; /* Alineamos verticalmente los elementos */
     background-color: #6b3a3a;
     padding: 10px;
 }
 
-header a i {
-    margin-right: 5px; /* Ajusta el espacio entre el ícono y el texto */
-    vertical-align: middle;
-    color: #f0f0f0;
-    text-decoration: none;
-    left: 10px;
-}
-
 header h1 {
-    text-align: center;
+    margin: 0;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     color: black;
+    font-size: 24px;
+}
+
+header h2 {
     margin: 0;
+    font-size: 18px;
+    color: white;
+    font-weight: normal;
+}
+
+header a {
+    color: #f0f0f0;
+    text-decoration: none;
+    font-size: 14px;
 }
 
 .search-bar {

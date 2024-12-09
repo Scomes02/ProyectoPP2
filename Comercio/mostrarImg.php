@@ -16,10 +16,9 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Consulta para obtener los productos del comercio actual
-$sql = "SELECT * FROM productos WHERE id_comercio = ?";
+$sql = "SELECT id_producto, nombre_producto, codigo_producto, precio, imagen FROM productos WHERE id_comercio = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_comercio); // Evita inyección SQL
+$stmt->bind_param("i", $id_comercio);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -27,12 +26,12 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo "<div class='producto'>";
-        echo "<img src='../uploads/" . htmlspecialchars($row['imagen']) . "' alt='" . htmlspecialchars($row['nombre']) . "'>";
-        echo "<h3>" . htmlspecialchars($row['nombre']) . "</h3>";
+        echo "<img src='../uploads/" . htmlspecialchars($row['imagen']) . "' alt='" . htmlspecialchars($row['nombre_producto']) . "'>";
+        echo "<h3>" . htmlspecialchars($row['nombre_producto']) . "</h3>";
         echo "<p>Código: " . htmlspecialchars($row['codigo_producto']) . "</p>";
         echo "<p>Precio: $" . number_format($row['precio'], 2) . "</p>";
-        if (!empty($row['off'])) {
-            echo "<p>Descuento: " . htmlspecialchars($row['off']) . "%</p>";
+        if (!empty($row['codigo_producto'])) {
+            echo "<p>Codigo_producto: " . htmlspecialchars($row['codigo_producto']) . "</p>";
         }
         echo "</div>";
     }
@@ -40,7 +39,7 @@ if ($result->num_rows > 0) {
     echo "<p>No hay productos cargados para este comercio.</p>";
 }
 
-// Cierra la conexión
 $stmt->close();
 $conn->close();
+
 ?>
